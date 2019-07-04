@@ -35,8 +35,8 @@ class CalcController{
     clearAll(){
         this._operation = []; 
     }
-    clearEntry(){//remove o ultimo elemento de um array
-        this._operation.pop();
+    clearEntry(){//talvez mude
+        this._operation.pop();//remove o ultimo elemento de um array
     }
     getLastOperation(){
         return this._operation[this._operation.length-1];
@@ -47,8 +47,22 @@ class CalcController{
     isOperator(val){
         return ['+','-','*','/','%'].indexOf(val);
     }
+    pushOperation(val){
+        this._operation.push(val);
+        if(this._operation.length>3){
+            this.calc();
+        }
+    }
+    calc(){
+        let last = this._operation.pop();
+        let result = eval(this._operation.join(""));
+        this._operation=[result,last];
+
+    }
+    setLastNumberToDisplay(){
+
+    }
     addOperation(val){
-        console.log('A',isNaN(this.getLastOperation()));
         if(isNaN(this.getLastOperation())){
             //string
             if(this.isOperator(val)>-1){
@@ -57,16 +71,23 @@ class CalcController{
 
             }else if(isNaN(val)){
                 //transforma em float ou add operador
+                console.log("sla",val);
             }else{
                 //numero
-                this._operation.push(val);
+                this.pushOperation(val);
             }
         }else{
-            //number
-            let newval = this.getLastOperation().toString() +val.toString();
-            this.setLastOperation(newval);            
+            if(this.isOperator(val)>-1){
+                this.pushOperation(val);
+            }
+            else{
+                //number
+                let newval = this.getLastOperation().toString() +val.toString();
+                this.setLastOperation(newval);
+                //atualizardisplay
+
+            }
         }
-        console.log(this._operation);
     }
     setError(){
         this.displayCalc="Error";
@@ -93,6 +114,8 @@ class CalcController{
                 break;
             case 'subtracao':
                 this.addOperation('-');
+                break;
+            case 'ponto':             
                 break;
             case 'igual':
                 break;
@@ -142,11 +165,15 @@ class CalcController{
         let hour = data.getHours();
         let minute=data.getMinutes();
         let seconds=data.getSeconds();
-        if (seconds<'10'){
-            seconds=[0+seconds];
+        if (parseInt(seconds)<10){
+            seconds='0'+seconds.toString();
+        }
+        if (parseInt(minute)<10){
+            minute='0'+minute.toString();
         }
         let temp=[hour+":"+minute+":"+seconds];
         return temp;
+        
     }
     set currentDate(val){
         this._currentDate=val;
