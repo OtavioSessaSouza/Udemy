@@ -38,9 +38,35 @@ class CalcController{
     clearEntry(){//remove o ultimo elemento de um array
         this._operation.pop();
     }
+    getLastOperation(){
+        return this._operation[this._operation.length-1];
+    }
+    setLastOperation(val){
+        this._operation[this._operation.length-1] = val;
+    }
+    isOperator(val){
+        return ['+','-','*','/','%'].indexOf(val);
+    }
     addOperation(val){
-        this._operation.push(val);
-        console.log("assim:",this._operation);
+        console.log('A',isNaN(this.getLastOperation()));
+        if(isNaN(this.getLastOperation())){
+            //string
+            if(this.isOperator(val)>-1){
+                //trocar operador
+                this.setLastOperation(val);
+
+            }else if(isNaN(val)){
+                //transforma em float ou add operador
+            }else{
+                //numero
+                this._operation.push(val);
+            }
+        }else{
+            //number
+            let newval = this.getLastOperation().toString() +val.toString();
+            this.setLastOperation(newval);            
+        }
+        console.log(this._operation);
     }
     setError(){
         this.displayCalc="Error";
@@ -54,12 +80,19 @@ class CalcController{
                 this.clearEntry();
                 break;
             case 'soma':
+                this.addOperation('+');
                 break;
             case 'divisao':
+                this.addOperation('/');
                 break;
             case 'multiplicacao':
+                this.addOperation('*');
                 break;
             case 'porcento':
+                this.addOperation('%');
+                break;
+            case 'subtracao':
+                this.addOperation('-');
                 break;
             case 'igual':
                 break;
