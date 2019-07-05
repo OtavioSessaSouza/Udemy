@@ -1,5 +1,7 @@
 class CalcController{
     constructor(){
+        this._lastOperator='';
+        this._lastNumber='';
         this._operation=[];
         this._locale = 'pt-BR'
         this._displayCalcEL = document.querySelector("#display");
@@ -56,13 +58,24 @@ class CalcController{
             this.calc();
         }
     }
+    getResult(){
+        return eval(this._operation.join(""));
+    }
     calc(){
-        console.log("calc")
         let last='';
+        let result;
+        this._lastOperator = this.getLastItem();
+        if(this._operation.length<3){
+            let fristItem=this._operation[0];
+            this._operation=[fristItem,this._lastOperator,this._lastNumber];
+        }
         if(this._operation.length>3){
             last = this._operation.pop();
+            this._lastNumber = this.getResult();
+        }else if(this._operation.length==3){
+            this._lastNumber = this.getLastItem(false);
         }
-        let result = eval(this._operation.join(""));
+        result = this.getResult();
         if (last == '%') {
             result/=100;
             this._operation=[result];
@@ -77,14 +90,28 @@ class CalcController{
         this.setLastNumberToDisplay();
 
     }
-    setLastNumberToDisplay(){
-        let lastNumber=0;
+    getLastItem(isOperator = true){
+        let lastItem='';
         for(let i=this._operation.length-1; i>=0;i--){
-            if(this.isOperator(this._operation[i])<0){
-                lastNumber=this._operation[i];
+            if(isOperator==true){
+                if(this.isOperator(this._operation[i])>=0){
+                lastItem=this._operation[i];
                 break;
+                }
+            }else{
+                if(this.isOperator(this._operation[i])<0){
+                    lastItem=this._operation[i];
+                    break;
+                }   
             }
         }
+        if(lastItem==''){
+            lastItem=(isOperator) ? this._lastOperator : this._lastNumber;//(condição) ? caso sim : caso nao; 
+        }
+        return lastItem;
+    }
+    setLastNumberToDisplay(){
+        let lastNumber=this.getLastItem(false);
         if (!lastNumber){
             lastNumber=0;
         }
@@ -200,6 +227,9 @@ class CalcController{
         }
         if (parseInt(minute)<10){
             minute='0'+minute.toString();
+        }
+        if (parseInt(hour)<10){
+            hour='0'+hour.toString();
         }
         let temp=[hour+":"+minute+":"+seconds];
         return temp;
