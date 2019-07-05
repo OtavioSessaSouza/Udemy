@@ -26,6 +26,7 @@ class CalcController{
         setInterval(()=>{
             this.setDisplayDateTime();        
         },1000);
+        this.setLastNumberToDisplay();
     }
     addEventListenerALL(element, events,fn){
         events.split(' ').forEach(event =>{
@@ -34,9 +35,11 @@ class CalcController{
     }
     clearAll(){
         this._operation = []; 
+        this.setLastNumberToDisplay();
     }
     clearEntry(){//talvez mude
         this._operation.pop();//remove o ultimo elemento de um array
+        this.setLastNumberToDisplay();
     }
     getLastOperation(){
         return this._operation[this._operation.length-1];
@@ -54,9 +57,23 @@ class CalcController{
         }
     }
     calc(){
-        let last = this._operation.pop();
+        console.log("calc")
+        let last='';
+        if(this._operation.length>3){
+            last = this._operation.pop();
+        }
         let result = eval(this._operation.join(""));
-        this._operation=[result,last];
+        if (last == '%') {
+            result/=100;
+            this._operation=[result];
+        }
+        else{
+            this._operation=[result];
+            if(last!=''){
+                this._operation.push(last);
+            }
+        }
+        
         this.setLastNumberToDisplay();
 
     }
@@ -67,6 +84,9 @@ class CalcController{
                 lastNumber=this._operation[i];
                 break;
             }
+        }
+        if (!lastNumber){
+            lastNumber=0;
         }
         this.displayCalc=lastNumber;
     }
@@ -124,9 +144,10 @@ class CalcController{
             case 'subtracao':
                 this.addOperation('-');
                 break;
-            case 'ponto':             
+            case 'ponto':
                 break;
             case 'igual':
+                this.calc();            
                 break;
             case '0':
             case '1':
