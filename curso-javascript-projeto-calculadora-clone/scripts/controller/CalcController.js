@@ -57,10 +57,18 @@ class CalcController{
         let last = this._operation.pop();
         let result = eval(this._operation.join(""));
         this._operation=[result,last];
+        this.setLastNumberToDisplay();
 
     }
     setLastNumberToDisplay(){
-
+        let lastNumber=0;
+        for(let i=this._operation.length-1; i>=0;i--){
+            if(this.isOperator(this._operation[i])<0){
+                lastNumber=this._operation[i];
+                break;
+            }
+        }
+        this.displayCalc=lastNumber;
     }
     addOperation(val){
         if(isNaN(this.getLastOperation())){
@@ -75,6 +83,7 @@ class CalcController{
             }else{
                 //numero
                 this.pushOperation(val);
+                this.setLastNumberToDisplay();
             }
         }else{
             if(this.isOperator(val)>-1){
@@ -84,7 +93,7 @@ class CalcController{
                 //number
                 let newval = this.getLastOperation().toString() +val.toString();
                 this.setLastOperation(newval);
-                //atualizardisplay
+                this.setLastNumberToDisplay();
 
             }
         }
@@ -155,7 +164,7 @@ class CalcController{
         return this._displayCalcEL.innerHTML;
     }
     set displayCalc(val){
-        this._displayCalc=val;
+        this._displayCalcEL.innerHTML=val;
     }
     get currentDate(){
         return new Date();
