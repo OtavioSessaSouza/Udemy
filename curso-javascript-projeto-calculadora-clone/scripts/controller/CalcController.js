@@ -36,7 +36,9 @@ class CalcController{
         });
     }
     clearAll(){
-        this._operation = []; 
+        this._operation = [];
+        this._lastNumber='';
+        this._lastOperator='';
         this.setLastNumberToDisplay();
     }
     clearEntry(){//talvez mude
@@ -124,9 +126,6 @@ class CalcController{
                 //trocar operador
                 this.setLastOperation(val);
 
-            }else if(isNaN(val)){
-                //transforma em float ou add operador
-                console.log("sla",val);
             }else{
                 //numero
                 this.pushOperation(val);
@@ -144,6 +143,15 @@ class CalcController{
 
             }
         }
+    }
+    addDot(){
+        let lastOperation = this.getLastOperation();
+        if (!lastOperation || (this.isOperator(lastOperation)>-1)){
+            this.pushOperation('0.');
+        }else{
+            this.setLastOperation(lastOperation.toString() + '.');
+        }
+        this.setLastNumberToDisplay();
     }
     setError(){
         this.displayCalc="Error";
@@ -172,6 +180,7 @@ class CalcController{
                 this.addOperation('-');
                 break;
             case 'ponto':
+                this.addDot();
                 break;
             case 'igual':
                 this.calc();            
@@ -187,7 +196,7 @@ class CalcController{
             case '7':
             case '8':
             case '9':
-                this.addOperation(parseInt(val));
+                this.addOperation(parseFloat(val));
                 break;
             default:
                 this.setError();
