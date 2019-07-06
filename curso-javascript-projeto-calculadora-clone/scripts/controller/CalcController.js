@@ -10,6 +10,7 @@ class CalcController{
         this._currentDate;
         this.initialize();
         this.initButtonsEvents();
+        this.iniKeyboard();
     }
     get displayTime(){
         return this._timeEL.innerHTML;
@@ -29,6 +30,47 @@ class CalcController{
             this.setDisplayDateTime();        
         },1000);
         this.setLastNumberToDisplay();
+    }
+    iniKeyboard(){
+        document.addEventListener('keyup',e=>{
+            console.log(e.key);
+            switch(e.key){
+                case 'Escape':
+                    this.clearAll();
+                    break;
+                case 'Backspace':
+                    this.clearEntry();
+                    break;
+                case '+':
+                case '/':
+                case '*':
+                case '%':
+                case '-':
+                    this.addOperation(e.key);
+                    break;
+                case '.':
+                case ',':
+                    this.addDot();
+                    break;
+                case 'Enter':
+                case '=':
+                    this.calc();            
+                    break;
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                    this.addOperation(parseInt(e.key));
+                    break;
+            }
+        })
     }
     addEventListenerALL(element, events,fn){
         events.split(' ').forEach(event =>{
@@ -146,6 +188,9 @@ class CalcController{
     }
     addDot(){
         let lastOperation = this.getLastOperation();
+        if (typeof lastOperation === 'string' && lastOperation.split('').indexOf('.')>-1){
+            return;
+        }
         if (!lastOperation || (this.isOperator(lastOperation)>-1)){
             this.pushOperation('0.');
         }else{
@@ -196,7 +241,7 @@ class CalcController{
             case '7':
             case '8':
             case '9':
-                this.addOperation(parseFloat(val));
+                this.addOperation(val);
                 break;
             default:
                 this.setError();
