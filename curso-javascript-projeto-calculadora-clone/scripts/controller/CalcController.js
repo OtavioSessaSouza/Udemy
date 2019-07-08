@@ -24,16 +24,31 @@ class CalcController{
     set displayDate(val){
         return this._dateEL.innerHTML=val;
     }
+    pasteFromClipboard(){
+        document.addEventListener('paste', e=>{
+            let text = e.clipboardData.getData('Text');
+            this.displayCalc = parseFloat(text);
+        })
+    }
+    copyToClipboard(){
+        let input = document.createElement('input');
+        input.value = this.displayCalc;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand("Copy");
+        input.remove();
+
+    }
     initialize(){
         this.setDisplayDateTime();
         setInterval(()=>{
             this.setDisplayDateTime();        
         },1000);
         this.setLastNumberToDisplay();
+        this.pasteFromClipboard();
     }
     iniKeyboard(){
         document.addEventListener('keyup',e=>{
-            console.log(e.key);
             switch(e.key){
                 case 'Escape':
                     this.clearAll();
@@ -68,6 +83,9 @@ class CalcController{
                 case '8':
                 case '9':
                     this.addOperation(parseInt(e.key));
+                    break;
+                case 'c':
+                    if(e.ctrlKey) this.copyToClipboard();
                     break;
             }
         })
