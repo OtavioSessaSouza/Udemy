@@ -1,1 +1,1 @@
-# Projetos desenvolvidos pelo curso da demy
+# Projetos desenvolvidos pelo curso da Udemy
