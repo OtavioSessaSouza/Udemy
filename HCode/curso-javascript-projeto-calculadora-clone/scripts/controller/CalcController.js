@@ -137,8 +137,18 @@ class CalcController{
             this.calc();
         }
     }
+    setOperationZero(){
+        this._operation=[];
+    }
     getResult(){
-        return eval(this._operation.join(""));
+        try {
+            return eval(this._operation.join(""));            
+        } catch (error) {
+            setTimeout(()=>{
+                this.setError();
+                this.setOperationZero();
+            },1);
+        }
     }
     calc(){
         let last='';
