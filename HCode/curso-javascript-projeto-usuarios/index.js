@@ -1,1 +1,1 @@
-let userControler = new userControler("form-user-create", "table-users");
+let userControler = new UserControler("form-user-create", "table-users");

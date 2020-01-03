@@ -12,7 +12,7 @@ class UserControler{
     }
     getValues(){
         let user = {};
-        this.formEl.elements.forEach(function(fields,index){
+        [...this.formEl.elements].forEach(function(fields,index){
             if(fields.name =="gender"){
                 if(fields.checked){
                     user[fields.name] = fields.value;
@@ -34,8 +34,8 @@ class UserControler{
     }
 
     addLine(dataUser){
-        console.log(dataUser);
-        document.getElementById(this.tableEl).innerHTML = `
+        console.log(this.tableEl);
+        this.tableEl.innerHTML = `
             <tr>
                 <td><img src="dist/img/user1-128x128.jpg" alt="User Image" class="img-circle img-sm"></td>
                 <td>${dataUser.name}</td>
