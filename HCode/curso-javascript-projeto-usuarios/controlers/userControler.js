@@ -8,28 +8,40 @@ class UserControler{
         this.formEl.addEventListener("submit", (event) => {
             event.preventDefault();
             let values = this.getValues();
-            
-            this.getPhoto((content) => {
-                values.photo = content;
-                this.addLine(values);
-            });
+
+            this.getPhoto().then(
+                (content)=>{
+                    values.photo = content;
+                    this.addLine(values);
+
+                },
+                (e)=>{
+                    console.error(e);
+                }
+            );
         })
     }
-    getPhoto(callback){
-        let fileReader = new FileReader();
+    getPhoto(){
+        return new Promise((resolve, reject)=>{
+            let fileReader = new FileReader();
 
-        let elements = [...this.formEl.elements].filter(item=>{
-            if(item.name === "photo"){
-                return item;
-            }
-        });
+            let elements = [...this.formEl.elements].filter(item=>{
+                if(item.name === "photo"){
+                    return item;
+                }
+            });
+    
+            let file = elements[0].files[0];
+    
+            fileReader.onload=() =>{
+                resolve(fileReader.result);
+            };
+            fileReader.onerror=(e)=>{
+                reject(e);
+            };     
+            fileReader.readAsDataURL(file);
 
-        let file = elements[0].files[0];
-
-        fileReader.onload=() =>{
-            callback(fileReader.result);
-        };
-        fileReader.readAsDataURL(file);
+        })
 
     }
     getValues(){
@@ -56,7 +68,6 @@ class UserControler{
     }
 
     addLine(dataUser){
-        console.log(this.tableEl);
         this.tableEl.innerHTML = `
             <tr>
                 <td><img src="${dataUser.photo}" alt="User Image" class="img-circle img-sm"></td>
