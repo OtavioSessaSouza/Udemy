@@ -38,8 +38,6 @@ class User{
         return this._admin;
     }
 
-
-
     set registerDate(value){
         this._registerDate = value;
     }
