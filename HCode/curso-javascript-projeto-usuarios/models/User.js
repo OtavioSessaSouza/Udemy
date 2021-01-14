@@ -37,7 +37,6 @@ class User{
     get admin(){
         return this._admin;
     }
-
     set registerDate(value){
         this._registerDate = value;
     }
@@ -65,7 +64,4 @@ class User{
     set admin(value){
         this._admin = value;
     }
-
-
-
 }
